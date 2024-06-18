@@ -1,4 +1,3 @@
-CREATE EXTENSION pgcrypto;
 CREATE TYPE channel_affiliation AS ENUM('green','blue-white','neutral');
 
 CREATE TABLE channels (
@@ -42,3 +41,29 @@ LEFT JOIN
 GROUP BY
     c.channel_id, c.channel_name, c.subscriberCount, c.pol_affiliation;
 
+CREATE VIEW neutral_data AS
+SELECT
+    com.*, v.video_title,
+    c.channel_name, c.channel_id
+FROM comments AS com
+LEFT JOIN videos AS v ON com.video_id = v.video_id
+LEFT JOIN channels AS c ON v.channel_id = c.channel_id
+WHERE c.pol_affiliation = 'neutral';
+
+CREATE VIEW blue_white_data AS
+SELECT
+    com.*, v.video_title,
+    c.channel_name, c.channel_id
+FROM comments AS com
+LEFT JOIN videos AS v ON com.video_id = v.video_id
+LEFT JOIN channels AS c ON v.channel_id = c.channel_id
+WHERE c.pol_affiliation = 'blue-white';
+
+CREATE VIEW green_data AS
+SELECT
+    com.*, v.video_title,
+    c.channel_name, c.channel_id
+FROM comments AS com
+LEFT JOIN videos AS v ON com.video_id = v.video_id
+LEFT JOIN channels AS c ON v.channel_id = c.channel_id
+WHERE c.pol_affiliation = 'green';
